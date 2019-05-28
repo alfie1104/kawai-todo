@@ -27,7 +27,7 @@ export default class App extends React.Component {
   };
 
   render() {
-    const { newToDo, loadedToDos } = this.state;
+    const { newToDo, loadedToDos, toDos } = this.state;
 
     if (!loadedToDos) {
       return <AppLoading />;
@@ -49,7 +49,15 @@ export default class App extends React.Component {
             onSubmitEditing={this._addToDo}
           />
           <ScrollView contentContainerStyle={styles.toDos}>
-            <ToDo text="Hello I'm ToDo.JS" />
+            {Object.values(toDos).map(toDo => (
+              <ToDo
+                key={toDo.id}
+                text={toDo.text}
+                deleteToDo={this._deleteToDo}
+                id={toDo.id}
+                isCompleted={toDo.isCompleted}
+              />
+            ))}
           </ScrollView>
         </View>
       </View>
@@ -93,6 +101,19 @@ export default class App extends React.Component {
         return { ...newState };
       });
     }
+  };
+
+  _deleteToDo = id => {
+    this.setState(prevState => {
+      const toDos = prevState.toDos;
+      delete toDos[id];
+      const newState = {
+        ...prevState,
+        ...toDos
+      };
+
+      return { ...newState };
+    });
   };
 }
 
