@@ -56,6 +56,7 @@ export default class App extends React.Component {
                 isCompleted={toDo.isCompleted}
                 completeToDo={this._completeToDo}
                 uncompleteToDo={this._uncompleteToDo}
+                updateToDo={this._updateToDo}
                 {...toDo}
               />
             ))}
@@ -99,6 +100,7 @@ export default class App extends React.Component {
             ...newToDoObject
           }
         };
+        this._saveToDos(newState.toDos);
         return { ...newState };
       });
     }
@@ -113,6 +115,7 @@ export default class App extends React.Component {
         ...toDos
       };
 
+      this._saveToDos(newState.toDos);
       return { ...newState };
     });
   };
@@ -130,6 +133,7 @@ _uncompleteToDo = id => {
         }
       }
     };
+    this._saveToDos(newState.toDos);
     return { ...newState };
   });
 };
@@ -146,8 +150,31 @@ _completeToDo = id => {
         }
       }
     };
+    this._saveToDos(newState.toDos);
     return { ...newState };
   });
+};
+
+_updateToDo = (id, text) => {
+  this.setState(prevState => {
+    const newState = {
+      ...prevState,
+      toDos: {
+        ...prevState.toDos,
+        [id]: {
+          ...prevState.toDos[id],
+          text: text
+        }
+      }
+    };
+    this._saveToDos(newState.toDos);
+    return { ...newState };
+  });
+};
+
+_saveToDos = newToDos => {
+  console.log(JSON.stringify(newToDos));
+  const saveToDos = AsyncStorage.setItem("toDos", JSON.stringify(newToDos));
 };
 
 const styles = StyleSheet.create({
